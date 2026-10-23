@@ -7,8 +7,11 @@ let tick=0;let draws=0;function draw(){const c=$('#candles'),ctx=c.getContext('2
 
 // V2A scene is visual-only and never connects to MT5, databases, or orders.
 let sceneMode='scan';const modeNotes={idle:['演示：待机休息中','Demo: agents resting'],scan:['演示：模拟扫描市场','Demo: simulated market scan'],signal:['演示：发现虚构信号，未执行交易','Demo: hypothetical signal, no trade'],alert:['演示：风险警报动画，非真实警报','Demo: visual risk alert, not real']};
-function setSceneMode(mode){sceneMode=mode;const scene=document.querySelector('#scene');if(!scene)return;scene.dataset.mode=mode;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelectorAll('[data-scene-agent]').forEach((b,i)=>{b.classList.remove('working','alerting','sleeping');b.classList.add(mode==='idle'?'sleeping':mode==='alert'?'alerting':mode==='scan'?'working':i===2?'alerting':'working')});document.querySelector('#sceneNote').textContent=(modeNotes[mode]||modeNotes.scan)[en?1:0]}
+function setSceneMode(mode){sceneMode=mode;const scene=document.querySelector('#scene');if(!scene)return;scene.dataset.mode=mode;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelector('#sceneNote').textContent=(modeNotes[mode]||modeNotes.scan)[en?1:0]}
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setSceneMode(b.dataset.mode)));
-document.querySelectorAll('[data-scene-agent]').forEach(b=>b.addEventListener('click',()=>{chosen=Number(b.dataset.sceneAgent);render();document.querySelector('#detail').scrollIntoView({behavior:'smooth',block:'nearest'})}));
+
 const langButton=document.querySelector('#lang');langButton.addEventListener('click',()=>{document.querySelectorAll('[data-mode]').forEach(b=>{const names={idle:['💤 待机','💤 Idle'],scan:['🔍 扫描','🔍 Scan'],signal:['✨ 信号','✨ Signal'],alert:['🚨 风险','🚨 Risk']};b.textContent=names[b.dataset.mode][en?1:0]});setSceneMode(sceneMode)});
 setSceneMode('scan');
+
+// Public visual scene adapter: only synthetic mode + agent selection.
+window.V7DemoOffice={getMode:()=>sceneMode,selectAgent:(i)=>{chosen=i;render();document.querySelector('#detail').scrollIntoView({behavior:'smooth',block:'nearest'})},isEnglish:()=>en};
