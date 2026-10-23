@@ -15,3 +15,6 @@ setSceneMode('scan');
 
 // Public visual scene adapter: only synthetic mode + agent selection.
 window.V7DemoOffice={getMode:()=>sceneMode,selectAgent:(i)=>{chosen=i;render();document.querySelector('#detail').scrollIntoView({behavior:'smooth',block:'nearest'})},isEnglish:()=>en};
+
+// V2C.1: account presentation only. Never fetch real MT5 information.
+(function(){const button=document.getElementById('lang');if(!button)return;function updateAccount(){const english=button.textContent.trim()==='中文';const labels=english?['MT5 ACCOUNT OVERVIEW','● DEMO · DISCONNECTED','BALANCE','EQUITY','FLOATING P/L','MARGIN LEVEL','FREE MARGIN $9,240.00','OPEN TRADES 2 · SAMPLE']:['MT5 账户概览','● 演示 · 未连接','余额 · BALANCE','净值 · EQUITY','浮动盈亏 · FLOATING P/L','保证金水平 · MARGIN LEVEL','可用保证金 $9,240.00','持仓 2 · 模拟数据'];['accountTitle','accountState','lblBalance','lblEquity','lblPnl','lblMargin','accountFree','accountTrades'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=labels[i]})}button.addEventListener('click',updateAccount);updateAccount()})();

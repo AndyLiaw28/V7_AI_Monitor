@@ -1,7 +1,11 @@
 /* V2C: self-contained synthetic pixel-art office. No network / MT5 / trading APIs. */
 (()=>{'use strict';
 const canvas=document.getElementById('pixelOffice');if(!canvas)return;
-const c=canvas.getContext('2d',{alpha:false}),W=360,H=500;
+const W=360,H=500;
+// Draw at 2x internal resolution to reduce blocky scaling on high-density phones.
+// The logical coordinate system stays 360x500 for taps and animation.
+const SCALE=2;canvas.width=W*SCALE;canvas.height=H*SCALE;
+const c=canvas.getContext('2d',{alpha:false});c.setTransform(SCALE,0,0,SCALE,0,0);
 const P={bg:'#0b0d1d',floor:'#24203b',wall:'#17162c',pink:'#f07bd4',purple:'#ae8cff',cyan:'#65e9ee',green:'#64f4bd',yellow:'#ffd077',red:'#ff778e',white:'#e5dfff',dim:'#8b81ac'};
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const stations=[{x:27,y:135,name:'CHEF',color:P.pink,agent:0},{x:195,y:135,name:'SCAN',color:P.cyan,agent:1},{x:27,y:255,name:'RISK',color:P.yellow,agent:2},{x:195,y:255,name:'PILOT',color:P.purple,agent:3},{x:27,y:375,name:'NEWS',color:P.green,agent:4},{x:195,y:375,name:'VET',color:P.red,agent:5}];
@@ -29,5 +33,6 @@ if(mode==='alert'&&(reduce||Math.floor(t*2)%2===0)){rect(132,116,96,14,P.red);tx
 if(mode==='signal'){rect(133,116,94,14,P.yellow);txt('SIGNAL DEMO',137,126,P.bg,9)}
 requestAnimationFrame(render)}
 canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;const station=stations.find(s=>x>=s.x-8&&x<=s.x+146&&y>=s.y-14&&y<=s.y+97);if(station)window.V7DemoOffice?.selectAgent?.(station.agent)});
+// Keep the animation loop independent of language DOM updates.
 requestAnimationFrame(render);
 })();
