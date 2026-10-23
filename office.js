@@ -1,26 +1,33 @@
-/* V2B: self-contained, pixel-art, synthetic visual only. No network, MT5, database or orders. */
+/* V2C: self-contained synthetic pixel-art office. No network / MT5 / trading APIs. */
 (()=>{'use strict';
 const canvas=document.getElementById('pixelOffice');if(!canvas)return;
-const c=canvas.getContext('2d',{alpha:false});const W=360,H=330;
-const C={bg:'#090d20',floor:'#1a1b35',wall:'#10192f',line:'#563d80',pink:'#ef5ec4',purple:'#9d7dff',cyan:'#65e8e9',green:'#66f4b9',yellow:'#f9d27e',white:'#e2e9ff',dim:'#6d7e9f',red:'#ff7189'};
-let frame=0,last=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const rect=(x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
-const line=(x,y,x2,y2,color,width=1)=>{c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(Math.round(x)+.5,Math.round(y)+.5);c.lineTo(Math.round(x2)+.5,Math.round(y2)+.5);c.stroke()};
-const text=(s,x,y,color=C.white,size=9)=>{c.fillStyle=color;c.font=`bold ${size}px monospace`;c.fillText(s,x,y)};
-function monitor(x,y,phase,mode){rect(x-3,y-3,57,35,'#080d19');rect(x,y,51,26,'#26385c');rect(x+3,y+3,45,20,'#071b28');for(let i=0;i<9;i++){let px=x+5+i*5,py=y+15+Math.sin(i*.9+phase)*6;rect(px,py,3,3,i>6?C.pink:C.green)}if(mode==='alert'){rect(x+9,y+9,33,9,C.red);text('RISK',x+15,y+16,'#171024',8)}rect(x+22,y+26,7,6,'#60749a')}
-function agent(x,y,color,phase,mode,id){const bob=mode==='idle'?0:Math.sin(phase*2+id)*2;const yy=Math.round(y+bob);rect(x-12,yy+20,26,8,'#171124');rect(x-10,yy+6,23,19,color);rect(x-9,yy-7,22,17,'#dceaff');rect(x-6,yy-5,16,11,color);rect(x-3,yy-1,3,3,'#0c1932');rect(x+6,yy-1,3,3,'#0c1932');rect(x-12,yy+8,4,10,C.white);rect(x+12,yy+8,4,10,C.white);const arm=mode==='idle'?3:Math.sin(phase*6+id)>0?2:6;rect(x-15,yy+17+arm,7,3,C.white);rect(x+12,yy+17+6-arm,7,3,C.white);if(mode==='signal'){rect(x+15,yy-18,6,6,C.yellow);rect(x+17,yy-22,2,4,C.yellow)}if(mode==='alert'){rect(x+15,yy-18,9,8,C.red);text('!',x+18,yy-11,'#111',8)}}
-function desk(x,y,accent){rect(x-5,y+1,82,12,'#3b315b');rect(x-5,y+1,82,3,accent);rect(x,y+12,7,19,'#251d3f');rect(x+66,y+12,7,19,'#251d3f');rect(x+30,y+2,20,5,'#18243d');for(let i=0;i<5;i++)rect(x+32+i*3,y+3,2,1,C.cyan)}
-function draw(now){if(now-last<33){requestAnimationFrame(draw);return}last=now;const mode=window.V7DemoOffice?.getMode?.()||'scan';const phase=reduce?0:now/1000;frame++;
-rect(0,0,W,H,C.bg);rect(7,7,346,316,'#10142b');rect(11,11,338,308,C.wall);
-for(let x=16;x<350;x+=24){line(x,86,x,316,'#23203c');}for(let y=87;y<320;y+=24){line(12,y,348,y,'#23203c')}
-rect(11,11,338,29,'#171b36');rect(13,39,334,3,C.pink);text('V7 // AI TRADING FLOOR',19,29,C.pink,12);text('OFFLINE DEMO',266,28,C.green,8);
-rect(23,51,314,34,'#09172b');text('MARKET ANALYSIS   XAUUSD.m   M15',32,63,C.cyan,9);
-for(let i=0;i<24;i++){let x=33+i*12;let y=72+Math.sin(i*.7+phase*.65)*5;line(x,y-5,x,y+6,i%4===0?C.red:C.green);rect(x-3,y,7,Math.max(2,Math.abs(Math.sin(i+phase)*6)),i%4===0?C.red:C.green)}
-const stations=[{x:28,y:117,label:'CHEF',color:C.pink,id:0},{x:194,y:117,label:'SCAN',color:C.cyan,id:1},{x:28,y:217,label:'RISK',color:C.yellow,id:2},{x:194,y:217,label:'PILOT',color:C.purple,id:3}];
-for(const s of stations){rect(s.x-6,s.y-11,148,95,'#131a32');line(s.x-5,s.y-10,s.x+140,s.y-10,s.color);text(s.label,s.x,s.y-1,s.color,10);monitor(s.x+47,s.y+5,phase+s.id,mode);desk(s.x+23,s.y+42,s.color);agent(s.x+92,s.y+28,s.color,phase,mode,s.id);rect(s.x+4,s.y+58,33,8,'#08182a');text(mode==='idle'?'IDLE':mode==='alert'?'ALERT':mode==='signal'?'SIGNAL':'WORK',s.x+7,s.y+65,mode==='alert'?C.red:C.green,7)}
-if(mode==='signal'||mode==='alert'){const flash=reduce||Math.floor(phase*3)%2===0;if(flash){rect(164,177,33,19,mode==='alert'?C.red:C.yellow);text(mode==='alert'?'!':'↗',177,190,'#131226',13)}}else{line(169,180,190,180,C.purple,2);rect(176,177,5,5,C.green)}
-rect(11,310,338,10,'#211632');rect(13,310,mode==='alert'?260:mode==='signal'?200:145,2,mode==='alert'?C.red:C.pink);
-requestAnimationFrame(draw)}
-canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;const id=y>=206?(x<180?2:3):y>=102&&y<206?(x<180?0:1):-1;if(id>=0)window.V7DemoOffice?.selectAgent?.(id)});
-requestAnimationFrame(draw);
+const c=canvas.getContext('2d',{alpha:false}),W=360,H=500;
+const P={bg:'#0b0d1d',floor:'#24203b',wall:'#17162c',pink:'#f07bd4',purple:'#ae8cff',cyan:'#65e9ee',green:'#64f4bd',yellow:'#ffd077',red:'#ff778e',white:'#e5dfff',dim:'#8b81ac'};
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stations=[{x:27,y:135,name:'CHEF',color:P.pink,agent:0},{x:195,y:135,name:'SCAN',color:P.cyan,agent:1},{x:27,y:255,name:'RISK',color:P.yellow,agent:2},{x:195,y:255,name:'PILOT',color:P.purple,agent:3},{x:27,y:375,name:'NEWS',color:P.green,agent:4},{x:195,y:375,name:'VET',color:P.red,agent:5}];
+const rect=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
+const line=(x,y,xx,yy,col,w=1)=>{c.strokeStyle=col;c.lineWidth=w;c.beginPath();c.moveTo(Math.round(x)+.5,Math.round(y)+.5);c.lineTo(Math.round(xx)+.5,Math.round(yy)+.5);c.stroke()};
+const txt=(t,x,y,col=P.white,size=9)=>{c.font=`bold ${size}px monospace`;c.fillStyle=col;c.fillText(t,x,y)};
+function workstation(s,t,mode){const {x,y,color,name,agent}=s;rect(x-8,y-14,154,111,'#101326');rect(x-8,y-14,154,2,color);rect(x-8,y-14,2,111,'#5d386d');rect(x+144,y-14,2,111,'#5d386d');txt(name,x,y-2,color,11);
+// Neon triple-monitor workstation
+for(let j=0;j<2;j++){let mx=x+12+j*54;rect(mx,y+6,52,32,'#0b091b');rect(mx+3,y+9,46,24,'#172e3c');for(let i=0;i<7;i++){let h=5+Math.round(7*Math.abs(Math.sin(i*.83+t*.65+j+agent)));rect(mx+6+i*6,y+29-h,3,h,(i+agent)%4===0?P.red:color)}rect(mx+23,y+38,6,4,'#6c587b')}
+rect(x+10,y+47,121,8,'#443054');rect(x+14,y+54,7,30,'#35243e');rect(x+120,y+54,7,30,'#35243e');rect(x+53,y+50,36,5,'#15243b');for(let i=0;i<8;i++)rect(x+57+i*4,y+51,2,2,P.cyan);
+const yy=y+56+(mode==='idle'?0:Math.round(Math.sin(t*3+agent)*2));const cx=x+70;rect(cx-15,yy+18,30,13,'#292340');rect(cx-14,yy+1,29,24,color);rect(cx-13,yy-15,27,20,'#d9d8f7');rect(cx-10,yy-11,21,13,'#222b4d');if(mode==='idle'){rect(cx-6,yy-5,6,1,P.white);rect(cx+4,yy-5,6,1,P.white)}else{rect(cx-6,yy-7,4,4,P.green);rect(cx+5,yy-7,4,4,P.green)}rect(cx-18,yy+9,6,14,'#c3b9e5');rect(cx+14,yy+9,6,14,'#c3b9e5');const key=mode==='idle'?0:Math.round(Math.sin(t*9+agent)*4);rect(cx-20,yy+20+key,8,3,P.white);rect(cx+15,yy+20-key,8,3,P.white);rect(cx-11,yy-18,5,3,color);rect(cx+6,yy-18,5,3,color);
+if(mode==='signal'&&agent===1){rect(x+116,y-7,9,9,P.yellow);txt('!',x+119,y,P.bg,8)}if(mode==='alert'&&agent===2){rect(x+113,y-7,12,11,P.red);txt('!',x+117,y+1,P.bg,10)}
+rect(x+3,y+84,48,8,'#1c2536');txt(mode==='idle'?'IDLE':mode==='alert'?'ALERT':mode==='signal'?'SIGNAL':'WORK',x+7,y+91,mode==='alert'?P.red:P.green,7)}
+function render(now){const mode=window.V7DemoOffice?.getMode?.()||'scan';const t=reduce?0:now/1000;rect(0,0,W,H,P.bg);
+rect(8,7,344,486,'#16152c');rect(13,12,334,477,P.floor);
+for(let x=13;x<350;x+=16)line(x,110,x,489,'#302640');for(let y=112;y<490;y+=16)line(13,y,347,y,'#302640');
+rect(13,12,334,42,P.wall);rect(13,53,334,3,P.pink);txt('V7 // MINI AI COMMAND CENTER',23,29,P.pink,11);txt('6 AGENTS  /  OFFLINE SIMULATION',23,44,P.green,8);
+rect(22,64,316,46,'#081727');txt('XAUUSD.m  M15   SYNTHETIC FEED',30,76,P.cyan,8);
+for(let i=0;i<24;i++){const x=32+i*12,y=90+Math.sin(i*.8+t*.4)*7;line(x,y-6,x,y+7,i%5===0?P.red:P.green);rect(x-3,y,6,4+(i%3)*2,i%5===0?P.red:P.green)}
+// animated signal travel through center aisle
+line(178,125,178,473,'#6a3d80',2);for(let k=0;k<5;k++){const y=130+((t*26+k*75)%345);rect(176,y,5,9,mode==='alert'?P.red:mode==='signal'?P.yellow:P.purple)}
+for(const s of stations)workstation(s,t,mode);
+rect(13,487,334,6,'#2a1436');rect(13,487,mode==='alert'?334:mode==='signal'?260:190,2,mode==='alert'?P.red:P.pink);
+if(mode==='alert'&&(reduce||Math.floor(t*2)%2===0)){rect(132,116,96,14,P.red);txt('RISK ALERT',140,126,P.bg,10)}
+if(mode==='signal'){rect(133,116,94,14,P.yellow);txt('SIGNAL DEMO',137,126,P.bg,9)}
+requestAnimationFrame(render)}
+canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect();const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;const station=stations.find(s=>x>=s.x-8&&x<=s.x+146&&y>=s.y-14&&y<=s.y+97);if(station)window.V7DemoOffice?.selectAgent?.(station.agent)});
+requestAnimationFrame(render);
 })();
