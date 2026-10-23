@@ -1,1 +1,1 @@
-{"name":"V7 AI Monitor Mobile V2C","short_name":"V7 Monitor","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#090a18","theme_color":"#090a18","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
+{"name":"V7 Wall Street AI Monitor","short_name":"V7 Monitor","start_url":"./","scope":"./","display":"standalone","background_color":"#090d13","theme_color":"#10151b","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
